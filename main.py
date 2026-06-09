@@ -1,37 +1,6 @@
+from db_api import del_db, make_sql_query, reset_db
 import debug
-import sqlite3
 import sys
-
-# initialise a fresh database
-def init_db():
-        debug.log('Beginning database initialisation...')
-        conn = sqlite3.connect('RAP.db')
-        cursor = conn.cursor()
-
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS rap (
-            id INTEGER PRIMARY KEY AUTOINCREMENT
-        )
-    ''')
-
-        conn.commit()
-        conn.close()
-
-        debug.log('Finished database initialisation.')
-
-# delete database
-def del_db():
-        debug.log('Beginning database deletion...')
-        conn = sqlite3.connect('RAP.db')
-        cursor = conn.cursor()
-
-        cursor.execute('''
-        DROP TABLE IF EXISTS rap
-        ''')
-
-        conn.commit()
-        conn.close()
-        debug.log('Finished database deletion.')
 
 def print_help():
         print('''

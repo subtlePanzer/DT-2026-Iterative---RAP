@@ -1,3 +1,8 @@
+### CUSTOM PROGRAM FILES ###
+*.db
+*.debug
+
+### AUTO GENERATED ###
 # Prerequisites
 *.d
 
