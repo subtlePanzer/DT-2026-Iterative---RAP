@@ -1,6 +1,6 @@
 import time
 
-verbosity_level = 2
+verbosity_level = 0
 
 def log(msg: str):
         if verbosity_level >= 2:

@@ -33,13 +33,42 @@ def del_db():
         conn.close()
         debug.log('Finished database deletion.')
 
+def print_help():
+        print('''
+        NAME: main.py
+
+        SYNOPSIS: main.py [--options]
+
+        DESCRIPTION: 
+                TODO:
+
+        OPTIONS:
+                -db <database>:
+                        Use a specific database file address rather than the default.
+
+                --del-db:
+                        Deletes the database file.
+
+                --help:
+                        Prints help information.
+
+                --reset-db:
+                        Clears the database by deleting and re-creating the file.
+
+        EXIT STATUS:
+                Standard UNIX exit codes.
+
+        EXAMPLES:
+                TODO:
+        ''')
+
 # main execution pathway; launch the app
 def main():
         pass
 
 # process console flags
 args = sys.argv[1:]
-if __name__ == '__main__':
+if __name__ == '__main__': # todo: iterate over all args
         debug.log('Starting program...')
         if len(args) >= 1:
                 match args[0]:
@@ -50,8 +79,10 @@ if __name__ == '__main__':
                                 del_db()
                         case '--help':
                                 print_help()
+                        case '-h':
+                                print_help()
                         case _:
-                                print('Wrong command-line options. Use \'python3 main.py --help\' for usage instructions')
+                                print('Wrong command-line options. Use \'python3 main.py --help\' for detailed usage instructions')
                                 sys.exit(1)
         else:
                 main()
