@@ -34,10 +34,10 @@ def del_db():
         debug.log('Finished database deletion.')
 
 def print_help():
-        printf('''
+        print('''
         NAME: main.py
 
-        SYNOPSIS: main.py [--reset-db] [--del-db] [--help] [-db database.db]
+        SYNOPSIS: main.py [--options]
 
         DESCRIPTION: 
                 TODO:
@@ -79,8 +79,10 @@ if __name__ == '__main__': # todo: iterate over all args
                                 del_db()
                         case '--help':
                                 print_help()
+                        case '-h':
+                                print_help()
                         case _:
-                                print('Wrong command-line options. Use \'python3 main.py --help\' for usage instructions')
+                                print('Wrong command-line options. Use \'python3 main.py --help\' for detailed usage instructions')
                                 sys.exit(1)
         else:
                 main()
