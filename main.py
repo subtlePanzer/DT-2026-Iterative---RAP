@@ -1,4 +1,4 @@
-from db_api import del_db, make_sql_query, reset_db
+from db_api import del_db, make_sql_query, del_db
 import debug
 import sys
 
@@ -38,6 +38,7 @@ def main():
 # process console flags
 args = sys.argv[1:]
 if __name__ == '__main__': # todo: iterate over all args
+        debug.init_debug()
         debug.log('Starting program...')
         if len(args) >= 1:
                 match args[0]:

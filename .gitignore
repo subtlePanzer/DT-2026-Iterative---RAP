@@ -3,6 +3,8 @@
 *.debug
 
 ### AUTO GENERATED ###
+/__pycache__/
+
 # Prerequisites
 *.d
 
