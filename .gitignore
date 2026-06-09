@@ -1,3 +1,10 @@
+### CUSTOM PROGRAM FILES ###
+*.db
+*.debug
+
+### AUTO GENERATED ###
+/__pycache__/
+
 # Prerequisites
 *.d
 
