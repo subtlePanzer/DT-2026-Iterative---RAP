@@ -33,13 +33,16 @@ def del_db():
         conn.close()
         debug.log('Finished database deletion.')
 
+def print_help():
+        pass
+
 # main execution pathway; launch the app
 def main():
         pass
 
 # process console flags
 args = sys.argv[1:]
-if __name__ == '__main__':
+if __name__ == '__main__': # todo: iterate over all args
         debug.log('Starting program...')
         if len(args) >= 1:
                 match args[0]:
