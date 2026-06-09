@@ -12,7 +12,7 @@ def create_new_admin(username: str, password: str): # Check is current user is a
         save_password(username, password, 1)
 
 def login_attempt(username: str, password: str) -> bool:
-        debug.log(f'Login attempt: {username=} {password=}') # TODO limit attempts, hide password in logs
+        debug.log(f'Login attempt: {username=}') # TODO limit attempts
 
         out = make_sql_query(f'''
                 SELECT hashed_password, salt FROM login WHERE username = ? 
@@ -31,16 +31,22 @@ def login_attempt(username: str, password: str) -> bool:
                 debug.log(f'Login successful.')
         else:
                 debug.log(f'Incorrect password.')
+
         return success
 
-def save_password(username: str, password: str, access_level = 0):
+def save_password(username: str, password: str, access_level = 0) -> bool:
         salt = get_salt()
         _hash = hash_password(password, salt)
 
-        make_sql_query(f'''
-                INSERT INTO login (username, salt, hashed_password, access_level)
-                VALUES (?, ?, ?, ?);
-        ''', (username, salt, _hash, access_level))
+        try:
+                make_sql_query(f'''
+                        INSERT INTO login (username, salt, hashed_password, access_level)
+                        VALUES (?, ?, ?, ?);
+                ''', (username, salt, _hash, access_level))
+                return True
+        except:
+                debug.log(f'User {username} already exists')
+                return False
 
 def get_salt():
         SALT_BYTES = 32
