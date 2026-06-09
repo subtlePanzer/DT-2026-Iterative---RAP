@@ -34,7 +34,33 @@ def del_db():
         debug.log('Finished database deletion.')
 
 def print_help():
-        pass
+        printf('''
+        NAME: main.py
+
+        SYNOPSIS: main.py [--reset-db] [--del-db] [--help] [-db database.db]
+
+        DESCRIPTION: 
+                TODO:
+
+        OPTIONS:
+                -db <database>:
+                        Use a specific database file address rather than the default.
+
+                --del-db:
+                        Deletes the database file.
+
+                --help:
+                        Prints help information.
+
+                --reset-db:
+                        Clears the database by deleting and re-creating the file.
+
+        EXIT STATUS:
+                Standard UNIX exit codes.
+
+        EXAMPLES:
+                TODO:
+        ''')
 
 # main execution pathway; launch the app
 def main():
