@@ -1,7 +1,7 @@
 from os.path import isfile
 import time
 
-verbosity_level: int = 2
+verbosity_level: int = 1
 start_time: float
 is_debug: bool = True
 debug_path: str
@@ -52,4 +52,4 @@ def log_to_file(msg: str):
         global start_time
 
         with open(debug_path, 'a') as f:
-                f.write(f'TIME: {(time.time() - start_time):.2f} | {verbosity_level} | {msg}\n')
+                f.write(f'TIME: {(time.time() - start_time):.2f} | {msg}\n')
