@@ -1,4 +1,6 @@
-import Flask
+from flask import Flask
+
+webapp = Flask(__name__)
 
 def launch():
         # launch the website
