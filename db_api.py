@@ -1,12 +1,13 @@
 import debug
+from global_funcs import get_db_path
 import sqlite3
 
 # make an arbitrary SQL query
-def make_sql_query(cmd: str, params:tuple=(), path:str='RAP.db'):
+def make_sql_query(cmd: str, params:tuple=()):
         debug.log(f'SQL command: {cmd}')
         debug.log('Executing...')
 
-        with sqlite3.connect(path) as conn:
+        with sqlite3.connect(get_db_path()) as conn:
                 cursor = conn.cursor()
 
                 cursor.execute(cmd, params) # prevents SQL injection
@@ -35,7 +36,9 @@ def init_db():
                 username STRING PRIMARY KEY,
                 salt STRING,
                 hashed_password STRING,
-                access_level INTEGER
+                access_level INTEGER,
+                login_attempts INTEGER,
+                login_timeout INTEGER
                 )
         ''')
 
