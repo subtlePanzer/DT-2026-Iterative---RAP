@@ -10,5 +10,8 @@ def index_page():
         # homepage
         pass
 
-def login_page():
+def add_new_action():
+        pass
+
+def add_new_deliverable():
         pass

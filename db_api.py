@@ -33,14 +33,43 @@ def init_db():
 
         make_sql_query('''
                 CREATE TABLE IF NOT EXISTS login (
-                username STRING PRIMARY KEY,
-                salt STRING,
-                hashed_password STRING,
-                access_level INTEGER,
-                login_attempts INTEGER,
-                login_timeout INTEGER
+                        username STRING PRIMARY KEY,
+                        salt STRING,
+                        hashed_password STRING,
+                        access_level INTEGER,
+                        login_attempts INTEGER,
+                        login_timeout INTEGER
                 )
         ''')
+
+        make_sql_query('''
+                CREATE TABLE IF NOT EXISTS actions (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        name STRING,
+                        description STRING,
+                )
+        ''')
+
+        make_sql_query('''
+                CREATE TABLE IF NOT EXISTS deliverables (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT
+                        name STRING,
+                        description STRING,
+                        assigned_id INTEGER,
+                        start_date INTEGER,
+                        due_date INTEGER
+                        action_id INTEGER
+                )
+        ''')
+
+        make_sql_query('''
+                CREATE TABLE IF NOT EXISTS comments (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT
+                        author_id INTEGER,
+                        preceding_id INTEGER,
+                        deliverables_id INTEGER,
+                )
+        ''') # singularly-linked list
 
         debug.log('Finished login system initialisation.')
 
