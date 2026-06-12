@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<head>
+        <meta charset="UTF-8">
+        <title>RAP Tracker</title>
+</head>
+
+<body>
+        <h1>RAP Tracker</h1>
+        <h3>Add a new action</h3>
+        <form action="/submit" method="POST">
+                <label for="title">Action title:</label>
+                <input id="title" type="text" name="title" required placeholder="Enter name">
+                <br><br>
+                <label for="description">Action description:</label><br>
+                <textarea id="description" type="text" name="description" required
+                        placeholder="Enter description"></textarea>
+                <br><br><br>
+
+                <table id="dynamicTable" border="1"
+                        style="border-collapse: collapse; width: 100%; margin-bottom: 15px;">
+                        <thead>
+                                <tr>
+                                        <th style="padding: 8px; text-align: left;">Deliverable Name</th>
+                                        <th style="padding: 8px; text-align: left;">Assigned Person</th>
+                                        <th style="padding: 8px; text-align: center; width: 150px;">Delete</th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                </table>
+
+                <button type="button" id="addRowBtn">Add New Row</button>
+
+                <br><br>
+                <button type="submit">Submit</button>
+        </form>
+
+        <script>
+                const tableBody = document.querySelector('#dynamicTable tbody');
+                const addRowBtn = document.getElementById('addRowBtn');
+
+                // Global array to store users fetched from the database
+                let userList = [];
+
+                // 1. Fetch the user list from your backend API when the page loads
+                async function fetchUsers() {
+                        try {
+                                const response = await fetch('/api/users');
+
+                                // If the server returned an error code (like 500), jump to the catch block
+                                if (!response.ok) {
+                                        throw new Error(`Server returned status ${response.status}`);
+                                }
+
+                                const data = await response.json();
+
+                                // Check if data is actually an array before saving it
+                                if (Array.isArray(data)) {
+                                        userList = data;
+                                } else {
+                                        throw new Error("Data received from server is not an array");
+                                }
+
+                        } catch (error) {
+                                console.error("Error fetching users:", error);
+                                // FORCE userList to be a valid array so .map() doesn't crash the button
+                                userList = [{ id: "", name: "Database offline / Error loading users" }];
+                        }
+                }
+                // 2. Function to generate the <select> HTML options string
+                function generateUserOptions() {
+                        return userList
+                                .map(user => `<option value="${user.name}">${user.name}</option>`)
+                                .join('');
+                }
+
+                // 3. Add new row with the dynamic dropdown
+                addRowBtn.addEventListener('click', () => {
+                        const row = document.createElement('tr');
+
+                        row.innerHTML = `
+                    <td style="padding: 8px;"><input type="text" name="itemName[]" required placeholder="Enter name"></td>
+
+            <td style="padding: 8px;">
+              <select name="userId[]" required style="width: 100%; padding: 4px;">
+                <option value="" disabled selected>Select a user...</option>
+                ${generateUserOptions()}
+              </select>
+            </td>
+                    <td style="padding: 8px; text-align: center;">
+                        <button type="button" class="delete-btn">X</button>
+                      </td>
+          `;
+
+                        // Delete row functionality
+                        row.querySelector('.delete-btn').addEventListener('click', () => {
+                                row.remove();
+                        });
+
+                        tableBody.appendChild(row);
+                });
+
+                // Initialize the app by fetching users first
+                fetchUsers();
+        </script>
+</body>

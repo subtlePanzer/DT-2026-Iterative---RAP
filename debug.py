@@ -7,7 +7,11 @@ is_debug: bool = True
 debug_path: str
 
 def init_debug(debug_override:str=''):
-        global start_time, debug_path
+        global start_time, debug_path, is_debug
+
+        if not is_debug:
+                return
+
         start_time = time.time()
 
         i: int = 0

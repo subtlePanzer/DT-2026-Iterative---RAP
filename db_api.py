@@ -34,6 +34,7 @@ def init_db():
         make_sql_query('''
                 CREATE TABLE IF NOT EXISTS login (
                         username STRING PRIMARY KEY,
+                        id INTEGER,
                         salt STRING,
                         hashed_password STRING,
                         access_level INTEGER,
@@ -43,31 +44,43 @@ def init_db():
         ''')
 
         make_sql_query('''
+        CREATE TRIGGER IF NOT EXISTS ts_auto_inc_non_pk
+                AFTER INSERT ON login
+                FOR EACH ROW
+                WHEN NEW.id IS NULL
+                BEGIN
+                UPDATE login
+                SET id = COALESCE((SELECT MAX(id) FROM login), 0) + 1
+                WHERE username = NEW.username;
+        END;
+        ''')
+
+        make_sql_query('''
                 CREATE TABLE IF NOT EXISTS actions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name STRING,
-                        description STRING,
+                        description STRING
                 )
         ''')
 
         make_sql_query('''
                 CREATE TABLE IF NOT EXISTS deliverables (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name STRING,
                         description STRING,
                         assigned_id INTEGER,
                         start_date INTEGER,
-                        due_date INTEGER
+                        due_date INTEGER,
                         action_id INTEGER
                 )
         ''')
 
         make_sql_query('''
                 CREATE TABLE IF NOT EXISTS comments (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                         author_id INTEGER,
                         preceding_id INTEGER,
-                        deliverables_id INTEGER,
+                        deliverables_id INTEGER
                 )
         ''') # singularly-linked list
 

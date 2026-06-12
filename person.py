@@ -1,5 +1,5 @@
 class Person:
-        pass
+        db_id: int
 
 class User(Person):
         pass
