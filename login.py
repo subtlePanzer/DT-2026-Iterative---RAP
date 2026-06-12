@@ -24,6 +24,10 @@ def login_attempt(username: str, password: str) -> bool:
                 SELECT hashed_password, salt FROM login WHERE username = ? 
         ''', (username,))
 
+        if out == []:
+                debug.log(f'User {username} not found')
+                return False
+
         query_result = out[0]
 
         if not query_result:
@@ -52,6 +56,10 @@ def is_allowed_to_login(username: str) -> bool:
         out = make_sql_query(f'''
                 SELECT login_attempts, login_timeout FROM login WHERE username = ?
         ''', (username,))
+
+        if out == []:
+                debug.log(f'User {username} not found')
+                return False
 
         query_result = out[0]
 

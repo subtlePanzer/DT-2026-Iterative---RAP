@@ -36,16 +36,27 @@ def print_help():
 
 # main execution pathway; launch the app
 def main():
-        # launch() 
+        init_db()
 
         create_new_user('Alice', 'password')
         create_new_user('Bob69420', 's3cur3P4ssw0rd')
         create_new_admin('admin_charlie', '4iK^2K9A5hae$ka@1lg')
         create_new_user('Dina', 'password')
 
-        print(f'Login attempt: Alice, PASSWORD: {login_attempt('Alice', 'PASSWORD')}')
-        print(f'Login attempt: Alice, password: {login_attempt('Alice', 'password')}')
-        print(f'Login attempt: admin_charlie, 4iK^2K9A5hae$ka@1lg: {login_attempt('admin_charlie', '4iK^2K9A5hae$ka@1lg')}')
+        # print(f'Login attempt: Alice, PASSWORD: {login_attempt('Alice', 'PASSWORD')}')
+        # print(f'Login attempt: Alice, password: {login_attempt('Alice', 'password')}')
+        # print(f'Login attempt: admin_charlie, 4iK^2K9A5hae$ka@1lg: {login_attempt('admin_charlie', '4iK^2K9A5hae$ka@1lg')}')
+
+        launch()
+
+def del_all_dbs():
+        del_db('rap')
+        del_db('login')
+        del_db('orders')
+        del_db('products')
+        del_db('actions')
+        del_db('comments')
+        del_db('deliverables')
 
 # process console flags
 args = sys.argv[1:]
@@ -89,11 +100,10 @@ if __name__ == '__main__': # todo: iterate over all args
                 main()
 
         if do_reset_db:
-                del_db('rap')
-                del_db('login')
+                del_all_dbs()
                 init_db()
 
         if do_del_db:
-                del_db()
+                del_all_dbs()
 
         debug.log('Finished execution.')
