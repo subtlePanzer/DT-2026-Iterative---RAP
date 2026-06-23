@@ -1,6 +1,9 @@
 from action import add_action_to_db, ActionData
+import datetime
+from deliverable import add_deliverable_to_db, DeliverableData
 from db_api import make_sql_query
 from flask import Flask, jsonify, request, render_template
+from person import Person
 
 app = Flask(__name__)
 
@@ -43,10 +46,12 @@ def get_users():
 def handle_submit():
         item_names = request.form.getlist('itemName[]')
         user_ids = request.form.getlist('userId[]')
-        add_action_to_db(ActionData(0, request.form['title'], request.form['description'], []))
+        action_id = 0 # get id tracking working
+        add_action_to_db(ActionData(action_id, request.form['title'], request.form['description'], [])) # pass in other data
         # TODO: add deliverables to the deliverable table
 
         for name, user_id in zip(item_names, user_ids):
                 print(f"Item: {name}, Assigned User ID: {user_id}")
+                add_deliverable_to_db(DeliverableData(0, name, "", Person.get_person_by_id(user_id), datetime.datetime(2000, 1, 2), datetime.datetime(2000, 1, 2), [], 0)) # pass in other data
 
         return "Form submitted successfully!"
