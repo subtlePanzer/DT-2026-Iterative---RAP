@@ -20,7 +20,7 @@ def index_page():
 def add_new_action():
         return render_template('action.html')
 
-@app.route('/view')
+@app.route('/actions')
 def view_rap():
         return render_template('view.html')
 
@@ -44,7 +44,35 @@ def get_users():
         except Exception as e:
                 return jsonify({"error": str(e)}), 500
 
+@app.route('/api/get_pillar', methods=['GET'])
+def get_pillar():
+        try:
+                data = [
+                {
+                "id": 1,
+                "action_name": "Estabish and maintain mutually beneficial relationships with Aboriginal and Torres Strait Islander stakeholders and organisations.",
+                "main_data": "Finished",
+                "subrows": ["Meet with local Aboriginal and Torres Strait Islander stakeholders and organisations to continuously improve guiding principles for engagement.", 
+                            "Review, update and implement an engagement plan to work with Aboriginal and Torres Strait Islander stakeholders.", 
+                            "Establish and maintain 3 formal two-way partnerships with Aboriginal and Torres Strait Islander communities or organisations."]
+                },
+                {
+                "id": 2,
+                "action_name": "2. Build relationships through celebrating National Reconciliation Week (NRW).",
+                "main_data": "Ongoing",
+                "subrows": ["Circulate Reconciliation Australia’s NRW resources and reconciliation materials to all staff."]
+                },
+                {
+                "id": 3,
+                "action_name": "3. Promote reconciliation through our sphere of influence.",
+                "main_data": "Ongoing",
+                "subrows": ["Invite staff from RWG to take leadership of RAP action deliverables through the allocation of the RWG roles.", 
+                            "Communicate our commitment to reconciliaiton publicly including, but not limited to, the AISSA Annual Report and the AISSA website"]
+                }]
 
+                return jsonify(data)
+        except Exception as e:
+                return jsonify({"error": str(e)}), 500
 
 @app.route('/submit', methods=['POST'])
 def handle_submit():

@@ -1,42 +1,79 @@
 .tab-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  font-family: sans-serif;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.tab {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  border: none;
-  background: #eee;
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-.tab:hover {
-  background: #ddd;
-}
-
-.tab.active {
-  background: #333;
-  color: #fff;
-}
-
-.tab-content {
-  display: none;
-}
-
-.tab-content.active {
-  display: block;
-}
+        /* Changed from 600px to a wide-screen friendly format */
+        width: 95%;
+        max-width: 1400px; 
+        margin: 2rem auto;
+        font-family: sans-serif;
+        background: #fff;
+        padding: 2rem; /* Increased padding for more breathing room */
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #eee; /* Added a subtle bottom line for structure */
+        padding-bottom: 0.5rem;
+      }
+      
+      .tab {
+        /* Keeps tabs proportional but stops them from stretching awkwardly on huge screens */
+        flex: 0 1 auto; 
+        padding: 0.75rem 1.5rem; /* Slightly larger targets */
+        cursor: pointer;
+        border: none;
+        background: #f5f5f5;
+        border-radius: 4px 4px 0 0; /* Rounded top corners only for a classic tab look */
+        font-weight: 600;
+        color: #555;
+        transition: all 0.3s ease;
+      }
+      
+      .tab:hover {
+        background: #e0e0e0;
+        color: #000;
+      }
+      
+      .tab.active {
+        background: #333;
+        color: #fff;
+      }
+      
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease; /* Adds a smooth transition when switching tabs */
+      }
+      
+      .tab-content.active {
+        display: block;
+      }
+      
+      /* Optional: Smooth fade-in for tab contents */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      /* Table specific styling to ensure it stretches to full width */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      
+      th, td {
+        border: 1px solid #dee2e6;
+        padding: 12px 16px;
+        text-align: left;
+      }
+      
+      th {
+        background-color: #f8f9fa;
+      }
+      
+      /* Thicker top border acting as a divider between main table records */
+      .main-row-border {
+        border-top: 3px solid #ccc !important;
+      }
