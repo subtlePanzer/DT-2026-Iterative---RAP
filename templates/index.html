@@ -1,10 +1,140 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<head>
-        <meta charset="UTF-8">
-        <title>RAP Tracker</title>
-</head>
+{% block title %}
+Dashboard
+{% endblock %}
 
-<body>
-        <a href="/action/new">Add a new attribute</a>
-</body>
+{% block content %}
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <h5>Total Actions</h5>
+
+                <h2>
+                    {{ total_actions }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <h5>Completed</h5>
+
+                <h2>
+                    {{ completed }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <h5>In Progress</h5>
+
+                <h2>
+                    {{ in_progress }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <h5>People</h5>
+
+                <h2>
+                    {{ people_count }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        Recent Actions
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Category</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for action in actions %}
+
+                <tr>
+
+                    <td>{{ action.title }}</td>
+
+                    <td>
+
+                        <span class="badge bg-success">
+                            {{ action.status }}
+                        </span>
+
+                    </td>
+
+                    <td>{{ action.category }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

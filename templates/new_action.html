@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}
+New Action
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+
+        Create New Action
+
+    </div>
+
+    <div class="card-body">
+
+        <form action="/submit" method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Action Title
+                </label>
+
+                <input
+                    class="form-control"
+                    name="title"
+                    required>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Description
+                </label>
+
+                <textarea
+                    class="form-control"
+                    rows="4"
+                    name="description"
+                    required>
+
+                </textarea>
+
+            </div>
+
+            <hr>
+
+            <h4>
+                Deliverables
+            </h4>
+
+            <table class="table" id="dynamicTable">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Deliverable</th>
+                        <th>Assigned Person</th>
+                        <th>Delete</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                </tbody>
+
+            </table>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="addRowBtn">
+
+                Add Deliverable
+
+            </button>
+
+            <br><br>
+
+            <button class="btn btn-success">
+
+                Submit
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+// Put your existing JavaScript here.
+// No need to rewrite the fetchUsers()
+// or dynamic row logic.
+
+</script>
+
+{% endblock %}

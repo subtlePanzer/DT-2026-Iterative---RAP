@@ -3,7 +3,7 @@ import time
 
 verbosity_level: int = 1
 start_time: float
-is_debug: bool = True
+is_debug: bool = False
 debug_path: str
 
 def init_debug(debug_override:str=''):
@@ -15,7 +15,7 @@ def init_debug(debug_override:str=''):
         start_time = time.time()
 
         i: int = 0
-
+        
         if debug_override:
                 debug_path = debug_override
         else:

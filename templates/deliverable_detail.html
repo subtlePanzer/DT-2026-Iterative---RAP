@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}
+Deliverable Detail
+{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h4 class="mb-0">Deliverable Detail</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Name</dt>
+                <dd class="col-sm-9">{{ deliverable.name }}</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">{{ deliverable.description }}</dd>
+
+                <dt class="col-sm-3">Assigned To</dt>
+                <dd class="col-sm-9">{{ deliverable.assigned }}</dd>
+
+                <dt class="col-sm-3">Due Date</dt>
+                <dd class="col-sm-9">{{ deliverable.due_date }}</dd>
+            </dl>
+            <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
