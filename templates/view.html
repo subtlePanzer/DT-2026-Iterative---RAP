@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/view.css') }}">
+        <title>View a RAP</title>
+</head>
+
+<body>
+        <h1>Viewing RAP</h1>
+        <div class="tab-container">
+                <div class="tabs">
+                        <button class="tab active" data-tab="P1">Relationships</button>
+                        <button class="tab" data-tab="P2">Respect</button>
+                        <button class="tab" data-tab="P3">Opportunities</button>
+                        <button class="tab" data-tab="P4">Governance</button>
+                </div>
+
+                <div class="tab-content active" id="P1">
+                        <h2>Pillar 1: Relationships</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+                <div class="tab-content" id="P2">
+                        <h2>Pillar 2: Respect</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+                <div class="tab-content" id="P3">
+                        <h2>Pillar 3: Opportunities</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+                <div class="tab-content" id="P4">
+                        <h2>Pillar 4: Governance</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+        </div>
+
+        <script>
+                const tabs = document.querySelectorAll('.tab');
+                const contents = document.querySelectorAll('.tab-content');
+
+                tabs.forEach((tab) => {
+                        tab.addEventListener('click', () => {
+                                const target = tab.dataset.tab;
+
+                                tabs.forEach((t) => t.classList.remove('active'));
+                                contents.forEach((c) => c.classList.remove('active'));
+
+                                tab.classList.add('active');
+                                document.getElementById(target).classList.add('active');
+                        });
+                });
+        </script>
+</body>
+</html>

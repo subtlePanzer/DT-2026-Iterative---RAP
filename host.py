@@ -20,6 +20,10 @@ def index_page():
 def add_new_action():
         return render_template('action.html')
 
+@app.route('/view')
+def view_rap():
+        return render_template('view.html')
+
 def pull_users():
         outs = make_sql_query('''
                 SELECT username, id FROM login
