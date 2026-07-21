@@ -70,7 +70,7 @@ if __name__ == '__main__': # todo: iterate over all args
         if len(args) >= 1:
                 match args[0]:
                         case '--reset-db':
-                                do_reset_db = True
+                                do_reset_db = True # add a seed database option
                         case '--del-db':
                                 do_del_db = True
                         case '--help':

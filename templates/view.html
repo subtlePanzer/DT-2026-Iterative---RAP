@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/view.css') }}">
+        <title>View a RAP</title>
+</head>
+
+<body>
+        <h1>Viewing RAP</h1>
+        <div class="tab-container">
+                <div class="tabs">
+                        <button class="tab active" data-tab="P1">Relationships</button>
+                        <button class="tab" data-tab="P2">Respect</button>
+                        <button class="tab" data-tab="P3">Opportunities</button>
+                        <button class="tab" data-tab="P4">Governance</button>
+                </div>
+                <div class="tab-content active" id="P1">
+                        <h2>Pillar 1: Relationships</h2>
+                        <h2 style="text-align: center;">Action Items with Subrows</h2>
+
+                        <table>
+                                <thead>
+                                        <tr>
+                                                <th>Action ID</th>
+                                                <th>Action Name</th>
+                                                <th>Status</th>
+                                                <th>Deliverables</th>
+                                        </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                </tbody>
+                        </table>
+
+                        <script>
+                                async function fetchAndRenderTable() {
+                                        try {
+                                                const response = await fetch('/api/get_pillar');
+                                                const actions = await response.json();
+                                                const tbody = document.getElementById('table-body');
+                                                tbody.innerHTML = ''; // Clear existing content
+
+                                                actions.forEach(action => {
+                                                        const subrowCount = action.subrows.length;
+
+                                                        // 1. Create the main row (and handle the first subrow)
+                                                        const mainRow = document.createElement('tr');
+
+                                                        // Set rowspan equal to the number of subrows (default to 1 if empty)
+                                                        const rowspanAttr = subrowCount > 0 ? ` rowspan="${subrowCount}"` : '';
+
+                                                        mainRow.innerHTML = `
+                                                        <td${rowspanAttr}>${action.id}</td>
+                                                        <td${rowspanAttr}>${action.action_name}</td>
+                                                        <td${rowspanAttr}>${action.main_data}</td>
+                                                        <td>${subrowCount > 0 ? action.subrows[0] : 'No subrows'}</td>
+                                                            `;
+                                                        tbody.appendChild(mainRow);
+
+                                                        // 2. Create extra rows for the remaining subrows
+                                                        for (let i = 1; i < subrowCount; i++) {
+                                                                const extraRow = document.createElement('tr');
+                                                                extraRow.innerHTML = `<td>${action.subrows[i]}</td>`;
+                                                                tbody.appendChild(extraRow);
+                                                        }
+                                                        tbody.appendChild(document.createElement('br'));
+                                                });
+
+                                        } catch (error) {
+                                                console.error('Error fetching data:', error);
+                                        }
+                                }
+
+                                // Run on page load
+                                fetchAndRenderTable();
+                        </script>
+                </div>
+                <div class="tab-content" id="P2">
+                        <h2>Pillar 2: Respect</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+                <div class="tab-content" id="P3">
+                        <h2>Pillar 3: Opportunities</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+                <div class="tab-content" id="P4">
+                        <h2>Pillar 4: Governance</h2>
+                        <p>[DISPLAY THE ACTIONS]</p>
+                </div>
+        </div>
+
+        <script>
+                const tabs = document.querySelectorAll('.tab');
+                const contents = document.querySelectorAll('.tab-content');
+
+                tabs.forEach((tab) => {
+                        tab.addEventListener('click', () => {
+                                const target = tab.dataset.tab;
+
+                                tabs.forEach((t) => t.classList.remove('active'));
+                                contents.forEach((c) => c.classList.remove('active'));
+
+                                tab.classList.add('active');
+                                document.getElementById(target).classList.add('active');
+                        });
+                });
+        </script>
+</body>
+
+</html>
