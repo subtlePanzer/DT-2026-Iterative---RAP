@@ -15,7 +15,7 @@ def init_debug(debug_override:str=''):
         start_time = time.time()
 
         i: int = 0
-
+        
         if debug_override:
                 debug_path = debug_override
         else:
