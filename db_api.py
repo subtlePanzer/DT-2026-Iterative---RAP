@@ -3,7 +3,7 @@ from global_funcs import get_db_path
 import sqlite3
 
 # make an arbitrary SQL query
-def make_sql_query(cmd: str, params:tuple=()):
+def make_sql_query(cmd:str, params:tuple=()):
         debug.log(f'SQL command: {cmd}')
         debug.log('Executing...')
 
@@ -17,6 +17,22 @@ def make_sql_query(cmd: str, params:tuple=()):
         debug.log('Finished.')
 
         return out
+
+def make_sql_query_return_index(cmd:str, params:tuple=()):
+        debug.log(f'SQL command: {cmd}')
+        debug.log('Executing...')
+
+        with sqlite3.connect(get_db_path()) as conn:
+                cursor = conn.cursor()
+
+                cursor.execute(cmd, params) # prevents SQL injection
+
+                out = cursor.lastrowid
+                conn.commit()
+        debug.log('Finished.')
+
+        return out
+
 
 # initialise a fresh database
 def init_db():
@@ -59,7 +75,8 @@ def init_db():
                 CREATE TABLE IF NOT EXISTS actions (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name STRING,
-                        description STRING
+                        description STRING,
+                        pillar INTEGER
                 )
         ''')
 

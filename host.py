@@ -29,7 +29,7 @@ def pull_users():
                 SELECT username, id FROM login
         ''')
 
-        users = [{"id": out[0], "name": out[1]} for out in outs]
+        users = [{"id": out[1], "name": out[0]} for out in outs]
         return users
 
 @app.route('/api/users', methods=['GET'])
@@ -46,44 +46,63 @@ def get_users():
 
 @app.route('/api/get_pillar', methods=['GET'])
 def get_pillar():
-        try:
-                data = [
-                {
-                "id": 1,
-                "action_name": "Estabish and maintain mutually beneficial relationships with Aboriginal and Torres Strait Islander stakeholders and organisations.",
-                "main_data": "Finished",
-                "subrows": ["Meet with local Aboriginal and Torres Strait Islander stakeholders and organisations to continuously improve guiding principles for engagement.", 
-                            "Review, update and implement an engagement plan to work with Aboriginal and Torres Strait Islander stakeholders.", 
-                            "Establish and maintain 3 formal two-way partnerships with Aboriginal and Torres Strait Islander communities or organisations."]
-                },
-                {
-                "id": 2,
-                "action_name": "2. Build relationships through celebrating National Reconciliation Week (NRW).",
-                "main_data": "Ongoing",
-                "subrows": ["Circulate Reconciliation Australia’s NRW resources and reconciliation materials to all staff."]
-                },
-                {
-                "id": 3,
-                "action_name": "3. Promote reconciliation through our sphere of influence.",
-                "main_data": "Ongoing",
-                "subrows": ["Invite staff from RWG to take leadership of RAP action deliverables through the allocation of the RWG roles.", 
-                            "Communicate our commitment to reconciliaiton publicly including, but not limited to, the AISSA Annual Report and the AISSA website"]
-                }]
+    try:
+        # Get the pillar ID from the query string parameters (?pillar=X)
+        pillar = request.args.get('pillar', type=int)
+        
+        if pillar is None:
+            return jsonify({"error": "Pillar parameter is required"}), 400
 
-                return jsonify(data)
-        except Exception as e:
-                return jsonify({"error": str(e)}), 500
+        actions_rows = make_sql_query("SELECT id, name FROM actions WHERE pillar = ?", (pillar,))
+        data = []
+
+        for action_id, action_name in actions_rows:
+            deliverables_rows = make_sql_query(
+                "SELECT name FROM deliverables WHERE action_id = ?", 
+                (action_id,)
+            )
+
+            # DEBUG: Print to your terminal console to see if SQLite finds anything
+            print(f"Action ID {action_id} deliverables from DB: {deliverables_rows}")
+
+            if deliverables_rows:
+                # Force extract the string from each row tuple safely
+                subrows = [str(row[0]) for row in deliverables_rows if row]
+
+                data.append({
+                    "id": action_id,
+                    "action_name": action_name,
+                    "main_data": "Assigned", 
+                    "subrows": subrows
+                })
+            else:
+                data.append({
+                    "id": action_id,
+                    "action_name": action_name,
+                    "main_data": "No deliverable assigned",
+                    "subrows": []
+                })
+
+        return jsonify(data)
+
+    except Exception as e:
+        print(f"Error in get_pillar: {e}")
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/submit', methods=['POST'])
 def handle_submit():
         item_names = request.form.getlist('itemName[]')
         user_ids = request.form.getlist('userId[]')
-        action_id = 0 # get id tracking working
-        add_action_to_db(ActionData(action_id, request.form['title'], request.form['description'], [])) # pass in other data
-        # TODO: add deliverables to the deliverable table
+        pillar = request.form.getlist('pillar[]')
+
+        action_id = add_action_to_db(ActionData(0, 1, request.form['title'], request.form['description'], [])) # pass in other data
+
+        print(f"{action_id=}")
+
 
         for name, user_id in zip(item_names, user_ids):
                 print(f"Item: {name}, Assigned User ID: {user_id}")
-                add_deliverable_to_db(DeliverableData(0, name, "", Person.get_person_by_id(user_id), datetime.datetime(2000, 1, 2), datetime.datetime(2000, 1, 2), [], 0)) # pass in other data
+                add_deliverable_to_db(DeliverableData(0, name, "", Person.get_person_by_id(user_id), datetime.datetime(2000, 1, 2), datetime.datetime(2000, 1, 2), [], action_id)) # pass in other data
 
         return "Form submitted successfully!"

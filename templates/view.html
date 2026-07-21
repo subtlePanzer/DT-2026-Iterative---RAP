@@ -17,10 +17,10 @@
                         <button class="tab" data-tab="P3">Opportunities</button>
                         <button class="tab" data-tab="P4">Governance</button>
                 </div>
+
                 <div class="tab-content active" id="P1">
                         <h2>Pillar 1: Relationships</h2>
-                        <h2 style="text-align: center;">Action Items with Subrows</h2>
-
+                        <h2 style="text-align: center;">Actions</h2>
                         <table>
                                 <thead>
                                         <tr>
@@ -30,68 +30,95 @@
                                                 <th>Deliverables</th>
                                         </tr>
                                 </thead>
-                                <tbody id="table-body">
-                                </tbody>
+                                <tbody id="table-body-p1"></tbody>
                         </table>
-
-                        <script>
-                                async function fetchAndRenderTable() {
-                                        try {
-                                                const response = await fetch('/api/get_pillar');
-                                                const actions = await response.json();
-                                                const tbody = document.getElementById('table-body');
-                                                tbody.innerHTML = ''; // Clear existing content
-
-                                                actions.forEach(action => {
-                                                        const subrowCount = action.subrows.length;
-
-                                                        // 1. Create the main row (and handle the first subrow)
-                                                        const mainRow = document.createElement('tr');
-
-                                                        // Set rowspan equal to the number of subrows (default to 1 if empty)
-                                                        const rowspanAttr = subrowCount > 0 ? ` rowspan="${subrowCount}"` : '';
-
-                                                        mainRow.innerHTML = `
-                                                        <td${rowspanAttr}>${action.id}</td>
-                                                        <td${rowspanAttr}>${action.action_name}</td>
-                                                        <td${rowspanAttr}>${action.main_data}</td>
-                                                        <td>${subrowCount > 0 ? action.subrows[0] : 'No subrows'}</td>
-                                                            `;
-                                                        tbody.appendChild(mainRow);
-
-                                                        // 2. Create extra rows for the remaining subrows
-                                                        for (let i = 1; i < subrowCount; i++) {
-                                                                const extraRow = document.createElement('tr');
-                                                                extraRow.innerHTML = `<td>${action.subrows[i]}</td>`;
-                                                                tbody.appendChild(extraRow);
-                                                        }
-                                                        tbody.appendChild(document.createElement('br'));
-                                                });
-
-                                        } catch (error) {
-                                                console.error('Error fetching data:', error);
-                                        }
-                                }
-
-                                // Run on page load
-                                fetchAndRenderTable();
-                        </script>
                 </div>
+
                 <div class="tab-content" id="P2">
                         <h2>Pillar 2: Respect</h2>
-                        <p>[DISPLAY THE ACTIONS]</p>
+                        <h2 style="text-align: center;">Actions</h2>
+                        <table>
+                                <thead>
+                                        <tr>
+                                                <th>Action ID</th>
+                                                <th>Action Name</th>
+                                                <th>Status</th>
+                                                <th>Deliverables</th>
+                                        </tr>
+                                </thead>
+                                <tbody id="table-body-p2"></tbody>
+                        </table>
                 </div>
+
                 <div class="tab-content" id="P3">
                         <h2>Pillar 3: Opportunities</h2>
-                        <p>[DISPLAY THE ACTIONS]</p>
+                        <h2 style="text-align: center;">Actions</h2>
+                        <table>
+                                <thead>
+                                        <tr>
+                                                <th>Action ID</th>
+                                                <th>Action Name</th>
+                                                <th>Status</th>
+                                                <th>Deliverables</th>
+                                        </tr>
+                                </thead>
+                                <tbody id="table-body-p3"></tbody>
+                        </table>
                 </div>
+
                 <div class="tab-content" id="P4">
                         <h2>Pillar 4: Governance</h2>
-                        <p>[DISPLAY THE ACTIONS]</p>
+                        <h2 style="text-align: center;">Actions</h2>
+                        <table>
+                                <thead>
+                                        <tr>
+                                                <th>Action ID</th>
+                                                <th>Action Name</th>
+                                                <th>Status</th>
+                                                <th>Deliverables</th>
+                                        </tr>
+                                </thead>
+                                <tbody id="table-body-p4"></tbody>
+                        </table>
                 </div>
         </div>
 
         <script>
+                // Single reusable function to fetch data and target the right table body
+                async function fetchAndRenderTable(pillarNum, tbodyId) {
+                        try {
+                                // Properly format query parameter: /api/get_pillar?pillar=1
+                                const response = await fetch(`/api/get_pillar?pillar=${pillarNum}`);
+                                const actions = await response.json();
+                                const tbody = document.getElementById(tbodyId);
+                                tbody.innerHTML = ''; 
+
+                                actions.forEach(action => {
+                                        const subrowCount = action.subrows.length;
+                                        const mainRow = document.createElement('tr');
+                                        const rowspanAttr = subrowCount > 0 ? ` rowspan="${subrowCount}"` : '';
+
+                                        mainRow.innerHTML = `
+                                                <td${rowspanAttr}>${action.id}</td>
+                                                <td${rowspanAttr}>${action.action_name}</td>
+                                                <td${rowspanAttr}>${action.main_data}</td>
+                                                <td>${subrowCount > 0 ? action.subrows[0] : 'No subrows'}</td>
+                                        `;
+                                        tbody.appendChild(mainRow);
+
+                                        for (let i = 1; i < subrowCount; i++) {
+                                                const extraRow = document.createElement('tr');
+                                                extraRow.innerHTML = `<td>${action.subrows[i]}</td>`;
+                                                tbody.appendChild(extraRow);
+                                        }
+                                });
+
+                        } catch (error) {
+                                console.error(`Error fetching data for Pillar ${pillarNum}:`, error);
+                        }
+                }
+
+                // Handle Tab Switch Actions
                 const tabs = document.querySelectorAll('.tab');
                 const contents = document.querySelectorAll('.tab-content');
 
@@ -106,6 +133,12 @@
                                 document.getElementById(target).classList.add('active');
                         });
                 });
+
+                // Load all tables automatically on page load
+                fetchAndRenderTable(1, 'table-body-p1');
+                fetchAndRenderTable(2, 'table-body-p2');
+                fetchAndRenderTable(3, 'table-body-p3');
+                fetchAndRenderTable(4, 'table-body-p4');
         </script>
 </body>
 
