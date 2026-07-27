@@ -1,8 +1,9 @@
 from action import add_action_to_db, ActionData
-import datetime
 from deliverable import add_deliverable_to_db, DeliverableData
 from db_api import make_sql_query
-from flask import Flask, jsonify, request, render_template, abort
+import datetime
+import io
+from flask import Flask, jsonify, request, render_template, abort, send_file
 from person import Person
 
 app = Flask(__name__)
@@ -95,6 +96,72 @@ def deliverable_detail(del_id):
 def view_rap():
         return render_template('view.html')
 
+@app.route('/reports')
+def export_rep():
+        return render_template('reports.html')
+
+@app.route('/api/export/csv')
+def export_csv():
+        csv_export_name = 'RAP_CSV.csv'
+        csv_content = 'Pillar,Action,DeliverableID,DeliverableName,DeliverableDesc,DeliverableStart,DeliverableDue,Assigned,Comments\r\n'
+
+        # Dynamically generate the contents of the csv
+        rows = make_sql_query("SELECT * FROM deliverables")
+        for row in rows:
+                action_id = int(row[6])
+                action_name = make_sql_query("SELECT name FROM actions WHERE id = ? LIMIT 1", str(action_id))[0][0]
+
+                pillar_table = {
+                        1 : "Relationships",
+                        2 : "Respect",
+                        3 : "Opportunities",
+                        4 : "Governance",
+                }
+                pillar = pillar_table[make_sql_query("SELECT pillar FROM actions WHERE id = ? LIMIT 1", str(action_id))[0][0]]
+
+                deliverable_id = int(row[0])
+                deliverable_name = row[1]
+                deliverable_desc = row[2]
+                deliverable_start = row[4]
+                deliverable_due = row[5]
+                assigned = make_sql_query("SELECT username FROM login WHERE id = ? LIMIT 1", str(row[3]))[0][0]
+
+                comment_arr = make_sql_query("SELECT text FROM comments WHERE deliverables_id = ?", str(deliverable_id))
+                comment_str = ",".join(comment_arr)
+
+                csv_line = ','.join([pillar, action_name, str(deliverable_id), 
+                        deliverable_name, deliverable_desc, str(deliverable_start), 
+                        str(deliverable_due), assigned, comment_str])
+
+                csv_content += csv_line + '\r\n'
+
+        file_buffer = io.BytesIO(csv_content.encode('utf-8'))
+        file_buffer.seek(0)
+
+        return send_file(
+                file_buffer,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name=csv_export_name
+        )
+
+@app.route('/api/export/report')
+def export_report():
+        report_name = 'RAP_report.md'
+
+        report_content = "";
+
+        file_buffer = io.BytesIO(report_content.encode('utf-8'))
+        file_buffer.seek(0)
+
+
+        return send_file(
+                file_buffer,
+                mimetype='text/markdown',
+                as_attachment=True,
+                download_name=report_name,
+        )
+
 def pull_users():
         outs = make_sql_query('''
                 SELECT username, id FROM login
@@ -120,7 +187,7 @@ def get_pillar():
     try:
         # Get the pillar ID from the query string parameters (?pillar=X)
         pillar = request.args.get('pillar', type=int)
-        
+
         if pillar is None:
             return jsonify({"error": "Pillar parameter is required"}), 400
 

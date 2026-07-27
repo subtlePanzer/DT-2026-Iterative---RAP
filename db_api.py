@@ -96,6 +96,7 @@ def init_db():
                 CREATE TABLE IF NOT EXISTS comments (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         author_id INTEGER,
+                        text STRING,
                         preceding_id INTEGER,
                         deliverables_id INTEGER
                 )
