@@ -61,8 +61,6 @@ def del_all_dbs():
 # process console flags
 args = sys.argv[1:]
 if __name__ == '__main__': # todo: iterate over all args
-        debug.init_debug()
-        debug.log('Starting program...')
 
         do_reset_db, do_del_db = False, False
         db_path: str = ""

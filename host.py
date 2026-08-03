@@ -147,21 +147,74 @@ def export_csv():
 
 @app.route('/api/export/report')
 def export_report():
-        report_name = 'RAP_report.md'
+    report_name = 'RAP_report.md'
+    
+    pillar_table = {
+        1: "Relationships",
+        2: "Respect",
+        3: "Opportunities",
+        4: "Governance",
+    }
 
-        report_content = "";
+    deliverables_query = """
+        SELECT 
+            d.id, 
+            d.name, 
+            d.description, 
+            d.start_date, 
+            d.due_date, 
+            a.name AS action_name, 
+            a.pillar AS pillar_id, 
+            l.username AS assigned_user
+        FROM deliverables d
+        LEFT JOIN actions a ON d.action_id = a.id
+        LEFT JOIN login l ON d.assigned_id = l.id
+        ORDER BY a.pillar, a.name, d.id
+    """
+    
+    deliverables = make_sql_query(deliverables_query)
 
-        file_buffer = io.BytesIO(report_content.encode('utf-8'))
-        file_buffer.seek(0)
+    markdown_lines = ["# Reconciliation Action Plan (RAP) Report\n"]
 
+    for row in deliverables:
+        d_id, d_name, d_desc, d_start, d_due, action_name, pillar_id, assigned_user = row
+        
+        pillar_name = pillar_table.get(pillar_id, "Unknown Pillar")
+        
+        # Format the start and due dates into strings
+        
+        # Build deliverable section
+        markdown_lines.append(f"## {d_name}")
+        markdown_lines.append(f"**Pillar:** {pillar_name}  ")
+        markdown_lines.append(f"**Action:** {action_name or 'N/A'}  ")
+        markdown_lines.append(f"**Assigned To:** {assigned_user or 'Unassigned'}  ")
+        markdown_lines.append(f"**Timeline:** {d_start} to {d_due}\n")
+        markdown_lines.append(f"### Description\n{d_desc}\n")
 
-        return send_file(
-                file_buffer,
-                mimetype='text/markdown',
-                as_attachment=True,
-                download_name=report_name,
-        )
+        # Fetch comments
+        comments = make_sql_query("SELECT text FROM comments WHERE deliverables_id = ?", str(d_id))
+        
+        markdown_lines.append("### Comments")
+        if comments:
+            for comment in comments:
+                markdown_lines.append(f"> {comment[0]}")
+        else:
+            markdown_lines.append("_No comments available._")
 
+        markdown_lines.append("\n---\n")
+
+    report_content = "\n".join(markdown_lines)
+
+    file_buffer = io.BytesIO(report_content.encode('utf-8'))
+    file_buffer.seek(0)
+
+    return send_file(
+        file_buffer,
+        mimetype='text/markdown',
+        as_attachment=True,
+        download_name=report_name,
+    )
+    
 def pull_users():
         outs = make_sql_query('''
                 SELECT username, id FROM login
