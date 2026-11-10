@@ -102,7 +102,17 @@ def export_rep():
 
 @app.route('/api/export/csv')
 def export_csv():
+        """
+                Exports the data as comma-seperated values. 
+
+                Returns: The downloaded file containing the CSV
+
+                Paramaters: None
+        """
+
         csv_export_name = 'RAP_CSV.csv'
+
+        # Schema for the CSV
         csv_content = 'Pillar,Action,DeliverableID,DeliverableName,DeliverableDesc,DeliverableStart,DeliverableDue,Assigned,Comments\r\n'
 
         # Dynamically generate the contents of the csv
